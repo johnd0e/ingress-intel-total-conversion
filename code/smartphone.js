@@ -71,12 +71,14 @@ window.smartphoneInfo = function(data) {
   if(!window.portals[guid]) return;
 
   var data = window.portals[selectedPortal].options.data;
-  if(typeof data.title === 'undefined') return;
-
+  if(typeof data.title === 'undefined') {
+    $('#mobileinfo').html('<div style="text-align: center; color: gray;">... loading portal info ...</div>');
+    return;
+  }
   var details = window.portalDetail.get(guid);
 
   var lvl = data.level;
-  if(data.team === "N" || data.team === "NEUTRAL")
+  if(data.team === 'N')
     var t = '<span class="portallevel">L0</span>';
   else
     var t = '<span class="portallevel" style="background: '+COLORS_LVL[lvl]+';">L' + lvl + '</span>';
