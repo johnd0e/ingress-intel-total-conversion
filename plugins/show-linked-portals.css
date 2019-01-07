@@ -27,7 +27,11 @@
 }
 
 .showLinkedPortalLink .minImg {
-	height: 40px;
+	width: 100%;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translateY(-50%);
 }
 
 .showLinkedPortalLink1, .showLinkedPortalLink2, .showLinkedPortalLink3, .showLinkedPortalLink4 {
@@ -70,6 +74,7 @@
 	border-style: dotted;
 }
 .showLinkedPortalLink.incoming::before {
+	z-index: 1;
 	content: "↳";
 }
 
@@ -77,5 +82,6 @@
 	border-style: dashed;
 }
 .showLinkedPortalLink.outgoing::before {
+	z-index: 1;
 	content: "↴";
 }
