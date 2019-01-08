@@ -30,11 +30,9 @@
 }
 
 .showLinkedPortalLink .minImg {
+	height: 100%;
 	width: 100%;
-	position: absolute;
-	top: 50%;
-	left: 0;
-	transform: translateY(-50%);
+	object-fit: cover;
 }
 
 .showLinkedPortalLink1, .showLinkedPortalLink2, .showLinkedPortalLink3, .showLinkedPortalLink4 {
