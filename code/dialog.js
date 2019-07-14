@@ -54,13 +54,12 @@ window.dialog = function(options) {
 
   // Build an identifier for this dialog
   var id = 'dialog-' + (options.modal ? 'modal' : (options.id ? options.id : 'anon-' + window.DIALOG_ID++));
-  var jqID = '#' + id;
-  var html = '';
-
   // hint for iitc mobile that a dialog was opened
   if (typeof android !== 'undefined' && android && android.dialogOpened) {
     android.dialogOpened(id, true);
   }
+
+  var html;
 
   // Convert text to HTML if necessary
   if(options.text) {
@@ -98,9 +97,8 @@ window.dialog = function(options) {
     dialog.dialog('option', 'width', options.width);
   }
 
-  // Create the window, appending a div to the body
-  $('body').append('<div id="' + id + '"></div>');
-  var dialog = $(jqID).dialog($.extend(true, {
+  var $html = $('<div>',{id: id}).append(html);
+  var dialog = $html.dialog($.extend(true, {
     autoOpen: false,
     modal: false,
     draggable: true,
@@ -222,10 +220,8 @@ window.dialog = function(options) {
 
   dialog.on('dialogdragstop dialogresizestop', sizeFix);
 
-  // Set HTML and IDs
-  dialog.html(html);
-  dialog.data('id', id);
-  dialog.data('jqID', jqID);
+  // Set ID
+  dialog.data('id', id); //todo??
 
   // Set callbacks
   dialog.data('closeCallback', options.closeCallback);
