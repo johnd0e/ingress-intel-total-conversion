@@ -1,9 +1,9 @@
 language: android
 jdk: oraclejdk8
-branches:
-  only:
-  - test-builds
-  - /^v([0-9]+)\.([0-9]+).*$/
+#branches:
+#  only:
+#  - test-builds
+#  - /^v([0-9]+)\.([0-9]+).*$/
 android:
   components:
   - platform-tools
@@ -15,11 +15,17 @@ addons:
   apt:
     sources: deadsnakes
     packages: python3.7
-  ssh_known_hosts: ssh.modos189.ru
 notifications:
-  email:
-    on_success: change
-    on_failure: always
+  webhooks:
+    urls:
+      #- https://fathomless-fjord-24024.herokuapp.com/notify
+      - https://travis-tg.herokuapp.com/u/897129600/force
+    on_success: never # default: always
+    #on_failure: always # default: always
+    on_start:   always # default: never
+    #on_cancel:  always # default: always
+    #on_error:   always # default: always
+  email: false
 jobs:
   include:
     - stage: test-builds
@@ -33,31 +39,24 @@ before_install: sudo update-alternatives --install /usr/bin/python3 python3 /usr
 
 before_script:
   - git fetch --unshallow
-  - wget https://iitc.modos189.ru/deploy/localbuildsettings.py
 
-script: ./build.py $BUILD_TYPE
+script: ./build.py mobile
+
+after_success:
+- TEXT="**$TRAVIS_BRANCH:**\`$TRAVIS_COMMIT\`"$'\n'"$TRAVIS_COMMIT_MESSAGE"$'\n'"$TRAVIS_BUILD_WEB_URL"
+- APIPARAMS="-F parse_mode=Markdown -F disable_notification=true -F chat_id=$tgchat_id https://api.telegram.org/bot$tgtoken/sendDocument"
+- curl -s -F document=@"build/mobile/IITC_Mobile-mobile.apk" -F caption="$TEXT" $APIPARAMS
+
+before_deploy:
+- sh bintray.json.sh > bintray.json
 
 deploy:
-  - provider: script
-    skip_cleanup: true
-    script: curl -s https://iitc.modos189.ru/deploy/deploy.sh | bash -s -- $BUILD_TYPE
-    on:
-      branch: test-builds
-  - provider: script
-    skip_cleanup: true
-    script: curl -s https://iitc.modos189.ru/deploy/deploy.sh | bash -s -- $BUILD_TYPE
-    on:
-      tags: true
-      branch: master
-  - provider: releases
-    skip_cleanup: true
-    name: $TRAVIS_TAG
-    api_key:
-      secure: KoJXTxCoatpFbQgbW1VBIh1ndtQIEmj68sANI+zOs54vi9XMCG3RM4cFn4y7YsSI/kz6XcoSC30SNnqedxHMPJyjrIWvVLKDTlbJswZmGhsslrZmClw3sFROKodVI5DoI0520mAfwzQ5PInPpSEfsPZQhA9ufv1wTZ/98q2efcRPu3J6riSdOZmqJ2A+veWpID3t3P57Lcjew+P3PdmUpwC9t6Yp4oQaYX4DZvMMpqK6s8E4EfOVQptaFAxYDIlAIWxNsfIJkx3jwmLdyaSwQL/fyesQ3fZRECKZTN7RM8/2nImuBZsq4uKS3nrKpLEXFTId45ET5N0fa23KXMLMM8NW0LlATLLWju+N7dP2HCeV5w2wxh+ToAR58XciiZLIsxI1IfF8WXloPax6DmJYksEKOenMYB/y/VASi5xbEhl89kdkxAaO6hAoVqKYo+xt7y3nPGSDUf+zfJnno5lPXgF3ctVAjmRBTWUSQQ5VhAeOp2LGg8ennzSkaLKxqyIxJ7F+n7Y0/QmG0uQzmerOjEEjVBsyVawRWjZGrDlog3Pq2S0n4vnbvbtUchwp/Fapjtg1f1pWy9Bzi1tnnE4ALJEmM894izxWH4vtDQu1+nkjKtLrkxgjk5yEuPj3n95ab64UO1To/x4YlyApmLkDeZIEMd+5siBTeGlB1V05Mr4=
-    file_glob: true
-    file:
-    - ./build/release/IITC_Mobile-release.apk
-    - ./build/release/*
-    on:
-      tags: true
-      branch: master
+  provider: bintray
+  file: "bintray.json"
+  user: #http://rkh.github.io/travis-encrypt/public/index.html
+    secure: Pgyk7SPKuUX1Ohz69lSDIrxwODwzXhZ+FVuo6RG8z/RuNP7zW4yBLx7XMeX90V0EGK6vT8+8aZdlRwQgHb7S+jpSCQZbBQGQTG1n8YqWeXS6QvFdB2/aaeBjQNT4BzH1Cv9QJ2BSYtWkvD9ggIEK9aHqiZ1P8uz2ssesqP3eKhd410vFHJpKUM3YptXT+x1QxqO4m65CvKjS11b2AiFm7SQSwPekK7oB8RbdctRP2y+NFPZ2+dH7Nm+SiJFwiALYYU59eLU2l48r2ishkHm/BPoA4unicGcxaT9NbGsw9y0yLrRCqUDn2hIj3JLGg8ija7SUOiSyebhEoV9fXXS8Aj6GDZNdsgiwu0nJOtOOiK/tLwyE9spdCOATLJDTm7BwUPIwexCGwh9iSaCuTzicCP9QlugCPu8Q/G4tQn2uWsShwdYee34b73u2zr8tVNx4nol547REKBexfBsZS1HdU9Hmv9spK7YJQqYyB5vAsZ0hNk/6kBFHgH1r+XZfIfLem4npyyXv9ZO+dBo4jtNEcfu1a1C6DFdq4swOaz5FP+4TL2y5JcI4NgWM1Zjbm/XKoHcsnKwDDLDlZq3zoA5tUs8GllJD6mhmjuRglUptPrDAe82uCdfCZmggMhgjvFOoHqCBgm0sf50xxzgc6SHfAmsKfUwOTjxUuweEL0fLq4c=
+  key:
+    secure: HJ/AS9W3cSZq960Aec/lwze1Fy0KOdOZI0rdlfSLx1hEO3PzEaz+dVdiF8IyDiTN+VXbm20BqAa5nz03+Y/LXE3L6SfY2FJJXQfv7aZ++IvHmv/K6bpBFYCxqlCitJffv7zhr0yoLXCmjd5EpEvWImIR2gF8VNeUE+MVXl9wwO6UcddjjxvTxh9x54aYJZt6+uQyBqXv4IXqbdNRovployVnaxuuCgkKd7NXPA+Z119LWsm0FfJrc89R13xAyk0xbS1aglMeMBIpJMpsL0Li1yybs0WN0b6A34PRM1TsWozrFIoj7E8pv0EJpRqK9DZ2ZzuTnn9qJOYEPzwm+6r/VRv0LloHVb/T9O1cDDjC9M13xe8ov1iZuXZ5wSZqeXTH+RuM4kFZWRLXb95BShApE6pnkooFyK8p28op5NEW+PYHIPhEHR1Ht9WGhmxgJUm/dIsFyFSO6HPc74/Wp/SQGwg+trUZvK4J+W45OziGAcNmuo+hesLi5AFrF7fE9jiGnm9rrwg+nzRIW0HzRuwmU1+cKWiguITHkcvcdDcIqcNtfQHemya+UdD7MJwWZI8ZvNUw3f/5+VHRPFFAI6H3MrWIgM+7qbv8l0H4ouctgTYVE+zcONogrPe1H662IHMGWl8xvhnRkkB13e9QRUktAwDBcR5HXFd4umpzayWq8Z0=
+  skip_cleanup: true
+  on:
+    all_branches: true
