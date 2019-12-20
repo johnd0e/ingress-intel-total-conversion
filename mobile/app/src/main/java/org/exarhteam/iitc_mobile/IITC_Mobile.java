@@ -810,8 +810,9 @@ public class IITC_Mobile extends AppCompatActivity
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        final int index = requestCode - RESULT_FIRST_USER;
+        if (data == null) { return; } // fix #295
 
+        final int index = requestCode - RESULT_FIRST_USER;
         try {
             final ResponseHandler handler = mResponseHandlers.get(index);
             handler.onActivityResult(resultCode, data);
