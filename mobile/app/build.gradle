@@ -52,7 +52,7 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix ".debug"
+            applicationIdSuffix ".debugjd"
             versionNameSuffix "-test-$BUILD_DATE"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
