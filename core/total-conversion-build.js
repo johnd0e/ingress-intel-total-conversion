@@ -191,7 +191,7 @@ window.overlayStatus = {};
 if(typeof window.plugin !== 'function') window.plugin = function() {};
 
 var ulog = (function (module) {
-  '@include_raw:external/ulog.min.js@';
+  '@include_raw:external/ulog.umd.js@';
   return module;
 }({})).exports;
 
