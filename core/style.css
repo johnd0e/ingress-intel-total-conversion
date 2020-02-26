@@ -103,7 +103,7 @@ i.large { font-size: 6rem; }
 }
 
 .nickname {
-  cursor: pointer !important;
+  font-family: monospace;
 }
 
 a {
@@ -684,6 +684,12 @@ h3.title {
   vertical-align: top;
   white-space: nowrap;
   width: 50%;
+}
+
+#randdetails td {
+  font-family: monospace;
+  word-spacing: -4px;
+  letter-spacing: -1px;
 }
 
 #randdetails th, #resodetails th {
