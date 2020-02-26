@@ -143,7 +143,7 @@ window.chat.requestFaction = function(getOlderMsgs, isRetry) {
   if(chat._requestFactionRunning && !isRetry) return;
   if(isIdle()) return renderUpdateStatus();
   chat._requestFactionRunning = true;
-  $("#chatcontrols a:contains('faction')").addClass('loading');
+  $('#chatcontrol-faction').addClass('loading');
 
   var d = chat.genPostData('faction', chat._faction, getOlderMsgs);
   var r = window.postAjax(
@@ -160,7 +160,7 @@ window.chat.requestFaction = function(getOlderMsgs, isRetry) {
 window.chat._faction = {data:{}, oldestTimestamp:-1, newestTimestamp:-1};
 window.chat.handleFaction = function(data, olderMsgs) {
   chat._requestFactionRunning = false;
-  $("#chatcontrols a:contains('faction')").removeClass('loading');
+  $('#chatcontrol-faction').removeClass('loading');
 
   if(!data || !data.result) {
     window.failedRequestCount++;
@@ -192,7 +192,7 @@ window.chat.requestPublic = function(getOlderMsgs, isRetry) {
   if(chat._requestPublicRunning && !isRetry) return;
   if(isIdle()) return renderUpdateStatus();
   chat._requestPublicRunning = true;
-  $("#chatcontrols a:contains('all')").addClass('loading');
+  $('#chatcontrol-all').addClass('loading');
 
   var d = chat.genPostData('all', chat._public, getOlderMsgs);
   var r = window.postAjax(
@@ -208,7 +208,7 @@ window.chat.requestPublic = function(getOlderMsgs, isRetry) {
 window.chat._public = {data:{}, oldestTimestamp:-1, newestTimestamp:-1};
 window.chat.handlePublic = function(data, olderMsgs) {
   chat._requestPublicRunning = false;
-  $("#chatcontrols a:contains('all')").removeClass('loading');
+  $('#chatcontrol-all').removeClass('loading');
 
   if(!data || !data.result) {
     window.failedRequestCount++;
@@ -241,7 +241,7 @@ window.chat.requestAlerts = function(getOlderMsgs, isRetry) {
   if(chat._requestAlertsRunning && !isRetry) return;
   if(isIdle()) return renderUpdateStatus();
   chat._requestAlertsRunning = true;
-  $("#chatcontrols a:contains('alerts')").addClass('loading');
+  $('#chatcontrol-alerts').addClass('loading');
 
   var d = chat.genPostData('alerts', chat._alerts, getOlderMsgs);
   var r = window.postAjax(
@@ -258,7 +258,7 @@ window.chat.requestAlerts = function(getOlderMsgs, isRetry) {
 window.chat._alerts = {data:{}, oldestTimestamp:-1, newestTimestamp:-1};
 window.chat.handleAlerts = function(data, olderMsgs) {
   chat._requestAlertsRunning = false;
-  $("#chatcontrols a:contains('alerts')").removeClass('loading');
+  $('#chatcontrol-alerts').removeClass('loading');
 
   if(!data || !data.result) {
     window.failedRequestCount++;
@@ -487,14 +487,14 @@ window.chat.tabToChannel = function(tab) {
 window.chat.toggle = function() {
   var c = $('#chat, #chatcontrols');
   if(c.hasClass('expand')) {
-    $('#chatcontrols a:first').html('<span class="toggle expand"></span>');
+    $('#chatcontrol-expand').html('<span class="toggle expand"></span>');
     c.removeClass('expand');
     var div = $('#chat > div:visible');
     div.data('ignoreNextScroll', true);
     div.scrollTop(99999999); // scroll to bottom
     $('.leaflet-control').css('margin-left', '13px');
   } else {
-    $('#chatcontrols a:first').html('<span class="toggle shrink"></span>');
+    $('#chatcontrol-expand').html('<span class="toggle shrink"></span>');
     c.addClass('expand');
     $('.leaflet-control').css('margin-left', '720px');
     chat.needMoreMessages();
@@ -575,7 +575,7 @@ window.chat.chooseTab = function(tab) {
   var input = $('#chatinput input');
 
   $('#chatcontrols .active').removeClass('active');
-  $("#chatcontrols a:contains('" + tab + "')").addClass('active');
+  $('#chatcontrol-' + tab).addClass('active');
 
   if (tab != oldTab) startRefreshTimeout(0.1*1000); //only chat uses the refresh timer stuff, so a perfect way of forcing an early refresh after a tab change
 
@@ -633,7 +633,7 @@ window.chat.show = function(name) {
 
 window.chat.chooser = function(event) {
   var t = $(event.target);
-  var tab = t.text();
+  var tab = t.text(); //todo
   window.chat.chooseTab(tab);
 }
 
@@ -670,7 +670,7 @@ window.chat.setup = function() {
 
   $('#chatcontrols, #chat, #chatinput').show();
 
-  $('#chatcontrols a:first').click(window.chat.toggle);
+  $('#chatcontrol-expand').click(window.chat.toggle);
   $('#chatcontrols a').each(function(ind, elm) {
     if($.inArray($(elm).text(), ['all', 'faction', 'alerts']) !== -1)
       $(elm).click(window.chat.chooser);

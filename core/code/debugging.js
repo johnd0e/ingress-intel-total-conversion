@@ -29,13 +29,14 @@ window.debug.console.show = function() {
     $('#chat > div').hide();
     $('#debugconsole').show();
     $('#chatcontrols .active').removeClass('active');
-    $("#chatcontrols a:contains('debug')").addClass('active');
+    $('#chatcontrol-debugconsole').addClass('active');
 }
 
 window.debug.console.create = function() {
-  if($('#debugconsole').length) return;
-  $('#chatcontrols').append('<a>debug</a>');
-  $('#chatcontrols a:last').click(window.debug.console.show);
+  if ($('#debugconsole').length) { return; }
+  $('<a id="chatcontrol-debugconsole">debug</a>')
+    .click(window.debug.console.show)
+    .appendTo('#chatcontrols');
   $('#chat').append('<div style="display: none" id="debugconsole"><table></table></div>');
 }
 

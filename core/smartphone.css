@@ -118,11 +118,6 @@ body {
   display: none !important;
 }
 
-/* hide shrink button */
-#chatcontrols a:first-child {
-  display: none;
-}
-
 #chatcontrols a {
   width: 50px;
   height:36px;

@@ -194,11 +194,6 @@ a:hover {
   vertical-align: top;
 }
 
-#chatcontrols a:first-child {
-  letter-spacing:-1px;
-  text-decoration: none !important;
-}
-
 #chatcontrols a.active {
   border-color: #FFCE00;
   border-bottom-width:0px;
