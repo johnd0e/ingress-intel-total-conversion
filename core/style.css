@@ -651,7 +651,9 @@ h3.title {
   width: 63px;
   cursor:help;
   border: 1px solid #666;
-}
+  font-family: monospace;
+  font-size: 12px;
+    }
 
 .mods span:not([title]) {
   cursor: auto;
