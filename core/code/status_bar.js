@@ -83,8 +83,10 @@ window.renderUpdateStatus = function() {
       progress = -1;
     }
 
-    if (typeof android !== 'undefined' && android && android.setProgress)
+    if (isAndroid && android.setProgress) {
       android.setProgress(progress);
+    }
+
   }, 0);
 
 }

@@ -80,13 +80,12 @@ window.renderPortalDetails = function(guid) {
 
   var linkDetails = $('<div>', { class: 'linkdetails' });
 
-  var posOnClick = window.showPortalPosLinks.bind(this,lat,lng,title);
-
-  if (typeof android !== 'undefined' && android && android.intentPosLink) {
+  if (window.isAndroid && android.intentPosLink) {
     // android devices. one share link option - and the android app provides an interface to share the URL,
     // share as a geo: intent (navigation via google maps), etc
-
-    var shareLink = $('<a>').text('Share portal').click(posOnClick);
+    var shareLink = $('<a>').text('Share portal').click(function () {
+      android.intentPosLink(lat, lng, window.map.getZoom(), title, true);
+    });
     linkDetails.append($('<aside>').append($('<div>').append(shareLink)));
 
   } else {
@@ -100,7 +99,7 @@ window.renderPortalDetails = function(guid) {
     // and a map link popup dialog
     var mapHtml = $('<a>').attr({
       title: 'Link to alternative maps (Google, etc)'
-    }).text('Map links').click(posOnClick);
+    }).text('Map links').click(window.showPortalPosLinks.bind(this, lat, lng, title));
     linkDetails.append($('<aside>').append($('<div>').append(mapHtml)));
   }
 
